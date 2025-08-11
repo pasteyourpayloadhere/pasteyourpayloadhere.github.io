@@ -114,7 +114,55 @@
 <body>
   <header class="topbar">
     <div class="inner container">
-      <div class="brand">pasteyourinjectionstringhere</div>
+      <div class="brand">
+
+					<span id="logo" style="font-family:monospace;color:#e6edf3;"></span>
+<script>
+(function(){
+  const TARGET = "payload";
+  const logoEl = document.getElementById("logo");
+  const text = "pasteyourpayloadhere";
+  const delay = 250;
+
+  function toShellcodeBytes(str) {
+    const encoder = new TextEncoder();
+    const bytes = encoder.encode(str);
+    return Array.from(bytes, b => '\\x' + b.toString(16).padStart(2,'0'));
+  }
+  function countBytesForFirstNCodepoints(str, n) {
+    const encoder = new TextEncoder();
+    const firstN = Array.from(str).slice(0, n).join('');
+    return encoder.encode(firstN).length;
+  }
+  function renderStep(full, start, end, hexParts, step) {
+    const pre = full.slice(0, start);
+    const mid = full.slice(start, end);
+    const post = full.slice(end);
+    const leftBytesCount = countBytesForFirstNCodepoints(mid, step);
+    const leftHex = hexParts.slice(0, leftBytesCount).join('');
+    const rightText = Array.from(mid).slice(step).join('');
+    return pre + `<span style="color:#00ff66;">` + leftHex + rightText + `</span>` + post;
+  }
+
+  async function morph() {
+    const start = text.indexOf(TARGET);
+    if (start === -1) { logoEl.textContent = text; return; }
+    const end = start + TARGET.length;
+    const mid = text.slice(start, end);
+    const hexParts = toShellcodeBytes(mid);
+    logoEl.innerHTML = text.slice(0, start) + `<span style="color:#00ff66;">` + mid + `</span>` + text.slice(end);
+    const totalSteps = Array.from(mid).length;
+    for (let i = 1; i <= totalSteps; i++) {
+      await new Promise(r => setTimeout(r, delay));
+      logoEl.innerHTML = renderStep(text, start, end, hexParts, i);
+    }
+  }
+  morph();
+})();
+</script>
+
+
+				</div>
       <nav class="nav"><p>blog</p></nav>
     </div>
   </header>
@@ -134,16 +182,16 @@
           <div class="tags"></div>
 
 		<h3>Ethical DNS Logging</h3>
-						<p>The purpose of this write-up is to document how to set up a DNS server that logs arbitrary query strings, intended for ethical use in Capture The Flag challenges and authorized penetration tests. This is aimed at those using BurpSuite Community Edition instead of OWASP ZAP or BurpSuite Professional. Use this information only in environments where you have explicit permission. If you do not intend to use this ethically, stop reading now.
+						<p>The purpose of this write-up is to document how to set up a DNS server that logs arbitrary query strings, intended for ethical use in CTFs and authorized pentests. This is aimed at those using BurpSuite Community Edition instead of OWASP ZAP or BurpSuite Professional. Use this information only in environments where you have explicit permission. If you do not intend to use this ethically, stop reading now.
 						</p>
 
           		<h3>Tools/Services</h3>
 		<p>
 			<ul>
-				<li>Linux (I've used archlinux), any distro is fine</li>
+				<li>Linux, any distro is fine</li>
 				<li>bind9 daemon/service</li>
 				<li>Cloudflare Account (free is fine)</li>
-				<li>A domain name (I wont be telling what I've used)</li>
+				<li>A domain name</li>
 				<li>An ethical mindset! Go away if that's not you :)</li>
 			</ul>
 		</p>
