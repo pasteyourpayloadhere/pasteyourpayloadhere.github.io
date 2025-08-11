@@ -6,7 +6,6 @@
   <title>paste's blog</title>
   <meta name="color-scheme" content="dark">
   <style>
-	/* a lazy web dev who used ai to generate the theme based on my waybar theme */
     :root{
       --bg-0:#252525;
       --bg-1:#343434;
@@ -18,7 +17,6 @@
       --border-0:#343434;
       --border-1:#595959;
     }
-
     *{
       font-family:"JetBrainsMono Nerd Font","JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
       font-size:16px;
@@ -27,29 +25,18 @@
       border-radius:0;
       box-sizing:border-box;
     }
-
     html,body{background:var(--bg-0);color:var(--fg-1);line-height:1.65;}
 
-	ul {
-		margin: 0px;
-		padding: 0px;
-		padding-left: 40px;
-		color: var(--fg-1);
-	}
-
-	li {
-		padding-left: 0px;
-		font-weight: normal;
-	}
+    ul{margin:0;padding:0 0 0 40px;color:var(--fg-1);}
+    li{padding-left:0;font-weight:normal;}
 
     a{color:var(--fg-2);text-decoration:none;}
     a:hover{text-decoration:underline;}
 
     .container{max-width:860px;margin:0 auto;padding:24px;}
 
-    /* Top taskbar vibe */
     .topbar{
-      background: var(--bg-1);
+      background:var(--bg-1);
       border-top:1px solid var(--border-0);
       color:var(--fg-2);
     }
@@ -58,26 +45,24 @@
       padding:12px 24px 10px 24px;
     }
     .brand{font-weight:700;margin-right:auto;}
-    .nav a{padding-right:10px;color:var(--fg-2);}
+    .nav p{color:var(--fg-2);}
 
     .block{
       background:var(--bg-2);
       color:var(--fg-1);
       padding:18px 20px 14px 20px;
       margin:12px 0;
+      border:1px solid var(--border-0);
     }
-    /*.block:hover{border-color:var(--border-1);}*/
 
     h1,h2,h3{color:var(--fg-2);margin:16px 0 8px;}
     p{margin:10px 0;}
-
     .post-meta{color:var(--fg-0);font-size:.9rem;margin-top:4px;}
 
     pre,code{background:var(--bg-2);color:var(--fg-2);}
     pre{padding:12px;overflow:auto;}
     code{padding:2px 4px;}
 
-    /* Footer tooltip-ish look */
     footer{
       background:var(--bg-1);
       color:var(--fg-2);
@@ -87,7 +72,6 @@
       border:1px solid var(--border-0);
     }
 
-    /* “Workspace” style tags */
     .tags{display:flex;flex-wrap:wrap;gap:10px;margin:8px 0;}
     .tag{
       background:var(--bg-0);
@@ -97,7 +81,30 @@
     }
     .tag.active{color:var(--fg-1);border-color:var(--border-1);}
 
-    /* Simple responsive tweaks */
+    /* Collapsible post */
+    .post-title{
+      display:block;
+      cursor:pointer;
+      user-select:none;
+      outline:none;
+    }
+    .post-title:focus-visible{box-shadow:0 0 0 2px var(--accent) inset;}
+    .post-content{
+      overflow:hidden;
+      max-height:0;
+      transition:max-height .35s ease;
+      will-change:max-height;
+    }
+    .post[aria-expanded="true"] .post-content{
+      /* big enough to cover tall posts; JS also sets exact height for smoothness */
+      max-height:2000px;
+    }
+
+    /* Respect reduced motion */
+    @media (prefers-reduced-motion: reduce){
+      .post-content{transition:none;}
+    }
+
     @media (max-width:600px){
       .container{padding:16px;}
       .topbar .inner{padding:10px 16px 8px 16px;}
@@ -107,61 +114,150 @@
 <body>
   <header class="topbar">
     <div class="inner container">
-      <div class="brand"><a href="#top">pasteyourinjectionstringhere</a></div>
-      <nav class="nav">
-		<p>blog</p>
-      </nav>
+      <div class="brand">pasteyourinjectionstringhere</div>
+      <nav class="nav"><p>blog</p></nav>
     </div>
   </header>
 
   <main id="top" class="container">
     <section id="posts" aria-label="Posts">
-      <article class="block" id="post-hello">
-        <h2>QEMU/KVM Virtual Machines (Work in Progress)</h2>
+
+      <article class="block post" id="post-hello" aria-expanded="false">
+        <h1 class="post-title" tabindex="0" role="button"
+            aria-controls="post-hello-content" aria-expanded="false">
+						Using BIND9 for Arbitrary DNS String Logging in Lab Environments (Work in Progress)
+        </h1>
         <div class="post-meta">Written around 1754723506~.</div>
-        <div class="tags">
+
+        <!-- Collapsible content -->
+        <div id="post-hello-content" class="post-content" role="region" aria-labelledby="post-hello-title">
+          <div class="tags"></div>
+
+		<h3>Ethical DNS Logging</h3>
+						<p>The purpose of this write-up is to document how to set up a DNS server that logs arbitrary query strings, intended for ethical use in Capture The Flag challenges and authorized penetration tests. This is aimed at those using BurpSuite Community Edition instead of OWASP ZAP or BurpSuite Professional. Use this information only in environments where you have explicit permission. If you do not intend to use this ethically, stop reading now.
+						</p>
+
+          		<h3>Tools/Services</h3>
+		<p>
+			<ul>
+				<li>Linux (I've used archlinux), any distro is fine</li>
+				<li>bind9 daemon/service</li>
+				<li>Cloudflare Account (free is fine)</li>
+				<li>A domain name (I wont be telling what I've used)</li>
+				<li>An ethical mindset! Go away if that's not you :)</li>
+			</ul>
+		</p>
+
+          <h3>To be continued...</h3>
         </div>
-					<h3>Introduction</h3>
-					<p>
-Setting up QEMU/KVM on Arch Linux with Virt-Manager offers a powerful, flexible virtualization environment, but the process involves more than just installing a few packages. This guide walks through the complete setup — from installation and configuration to network bridging, nftables integration, and common pitfalls to avoid. Whether you’re creating your first virtual machine or fine-tuning an existing setup, you’ll find practical steps, troubleshooting tips, and best practices to ensure a smooth and secure virtualization experience.
-					</p>
-					<h3>Why QEMU/KVM?</h3>
-					<p>
-KVM (Kernel-based Virtual Machine) is a Linux kernel module that turns the kernel into a type-1 hypervisor, allowing it to run virtual machines directly on the hardware with near-native performance. On its own, KVM only provides the virtualization infrastructure — it needs a userspace tool to handle machine emulation, hardware virtualization, and device management.
-					</p>
-					<p>
-QEMU (Quick EMUlator) fills that role by emulating hardware components, managing I/O, and interfacing with KVM to run guest operating systems efficiently. With KVM enabled, QEMU offloads CPU virtualization to the kernel while handling all other emulation tasks, giving you the speed of hardware acceleration with the flexibility of full system emulation.
-					</p>
-					<h3>Software Overview</p>
-					<p>
-						<ul>
-							<li>QEMU – Userspace emulator and virtualization frontend; works with KVM for hardware-accelerated virtual machines.</li>
-							<li>KVM – Kernel module enabling hardware-assisted virtualization on Linux.</li>
-							<li>Virt-Manager – GUI application to create, manage, and configure virtual machines.</li>
-							<li>libvirt – Service and API layer that manages QEMU/KVM instances, storage pools, and networks.</li>
-							<li>virsh – Command-line interface for managing virtual machines through libvirt.</li>
-							<li>VirtIO Drivers – Paravirtualized drivers for storage, network, and other devices to improve VM performance.</li>
-							<li>SPICE – Protocol for high-performance remote desktop access to virtual machines, with support for clipboard and file transfer.</li>
-							<li>nftables – Packet filtering and firewall framework for securing and managing VM networking.</li>
-							<li>swtpm – Software TPM (Trusted Platform Module) emulator, allowing you to provide TPM functionality to virtual machines for features like BitLocker or secure boot testing.</li>
-							<li>OVMF – UEFI firmware for virtual machines, enabling UEFI boot mode and features like Secure Boot within QEMU/KVM environments.</li>
-						</ul>
-					</p>
-					<h3>Installing the Packages</h3>
-					<p>
-						sudo pacman -S qemu virt-manager virt-viewer dnsmasq vde2 bridge-utils openbsd-netcat libvirt ovmf swtpm edk2-ovmf
-					</p>
-						<h3>Networking Pitfall</h3>
-					<p>
-A common pitfall when setting up QEMU/KVM networking is manually creating and configuring bridges (e.g., virbr0 with net0, net1, etc.) using system tools. While it’s possible, doing it by hand often leads to conflicts with libvirt’s network management, permission issues, or VMs losing connectivity after reboots. Instead, let libvirt handle networking for you through virt-manager or virsh net-define/net-start. These tools create and manage the bridge automatically, keep configurations persistent, and integrate cleanly with VM settings — saving you from chasing down obscure connection problems later.
-					</p>
-						<h3>To be continued...</h3>
-         </article>
+      </article>
+ 
+
+
+      <!-- Make each article .post and toggle aria-expanded -->
+      <article class="block post" id="post-hello" aria-expanded="false">
+        <!-- Clickable H1 controls the collapsible content -->
+        <h1 class="post-title" tabindex="0" role="button"
+            aria-controls="post-hello-content" aria-expanded="false">
+          QEMU/KVM Virtual Machines Using Virt-Manager (Work in Progress)
+        </h1>
+        <div class="post-meta">Written around 1754723506~.</div>
+
+        <!-- Collapsible content -->
+        <div id="post-hello-content" class="post-content" role="region" aria-labelledby="post-hello-title">
+          <div class="tags"></div>
+
+          <h3>Introduction</h3>
+          <p>
+            Setting up QEMU/KVM on Arch Linux with Virt-Manager offers a powerful, flexible virtualization environment, but the process involves more than just installing a few packages. This guide walks through the complete setup — from installation and configuration to network bridging, nftables integration, and common pitfalls to avoid. Whether you’re creating your first virtual machine or fine-tuning an existing setup, you’ll find practical steps, troubleshooting tips, and best practices to ensure a smooth and secure virtualization experience.
+          </p>
+
+          <h3>Why QEMU/KVM?</h3>
+          <p>
+            KVM (Kernel-based Virtual Machine) is a Linux kernel module that turns the kernel into a type-1 hypervisor, allowing it to run virtual machines directly on the hardware with near-native performance. On its own, KVM only provides the virtualization infrastructure — it needs a userspace tool to handle machine emulation, hardware virtualization, and device management.
+          </p>
+          <p>
+            QEMU (Quick EMUlator) fills that role by emulating hardware components, managing I/O, and interfacing with KVM to run guest operating systems efficiently. With KVM enabled, QEMU offloads CPU virtualization to the kernel while handling all other emulation tasks, giving you the speed of hardware acceleration with the flexibility of full system emulation.
+          </p>
+
+          <h3>Software Overview</h3>
+          <ul>
+            <li>QEMU – Userspace emulator and virtualization frontend; works with KVM for hardware-accelerated virtual machines.</li>
+            <li>KVM – Kernel module enabling hardware-assisted virtualization on Linux.</li>
+            <li>Virt-Manager – GUI application to create, manage, and configure virtual machines.</li>
+            <li>libvirt – Service and API layer that manages QEMU/KVM instances, storage pools, and networks.</li>
+            <li>virsh – Command-line interface for managing virtual machines through libvirt.</li>
+            <li>VirtIO Drivers – Paravirtualized drivers for storage, network, and other devices to improve VM performance.</li>
+            <li>SPICE – Protocol for high-performance remote desktop access to virtual machines, with support for clipboard and file transfer.</li>
+            <li>nftables – Packet filtering and firewall framework for securing and managing VM networking.</li>
+            <li>swtpm – Software TPM (Trusted Platform Module) emulator, allowing you to provide TPM functionality to virtual machines for features like BitLocker or secure boot testing.</li>
+            <li>OVMF – UEFI firmware for virtual machines, enabling UEFI boot mode and features like Secure Boot within QEMU/KVM environments.</li>
+          </ul>
+
+          <h3>Installing the Packages</h3>
+          <p><code>sudo pacman -S qemu virt-manager virt-viewer dnsmasq vde2 bridge-utils openbsd-netcat libvirt ovmf swtpm edk2-ovmf</code></p>
+
+          <h3>Networking Pitfall</h3>
+          <p>
+            A common pitfall when setting up QEMU/KVM networking is manually creating and configuring bridges (e.g., virbr0 with net0, net1, etc.) using system tools. While it’s possible, doing it by hand often leads to conflicts with libvirt’s network management, permission issues, or VMs losing connectivity after reboots. Instead, let libvirt handle networking for you through virt-manager or <code>virsh net-define/net-start</code>. These tools create and manage the bridge automatically, keep configurations persistent, and integrate cleanly with VM settings — saving you from chasing down obscure connection problems later.
+          </p>
+
+          <h3>To be continued...</h3>
+        </div>
+      </article>
     </section>
   </main>
 
-  <footer>
-			gnu/gpl licensed blog - happy hacking :)
-  </footer>
+  <footer>gnu/gpl licensed blog - happy hacking :)</footer>
+
+  <script>
+    // Toggle all posts via their H1
+    function setMaxHeight(el, open){
+      if(!el) return;
+      if(open){
+        // set to scrollHeight for smooth open
+        el.style.maxHeight = el.scrollHeight + "px";
+        // after transition, remove inline height so content can grow naturally
+        const onEnd = () => {
+          el.style.maxHeight = "2000px"; // keep generous cap for future content
+          el.removeEventListener('transitionend', onEnd);
+        };
+        el.addEventListener('transitionend', onEnd);
+      }else{
+        // set current height then to 0 for smooth close
+        el.style.maxHeight = el.scrollHeight + "px";
+        requestAnimationFrame(() => { el.style.maxHeight = "0px"; });
+      }
+    }
+
+    function togglePost(post, titleEl, contentEl){
+      const isOpen = post.getAttribute('aria-expanded') === 'true';
+      post.setAttribute('aria-expanded', String(!isOpen));
+      titleEl.setAttribute('aria-expanded', String(!isOpen));
+      setMaxHeight(contentEl, !isOpen);
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      document.querySelectorAll('.post').forEach(post => {
+        const titleEl = post.querySelector('.post-title');
+        const contentEl = post.querySelector('.post-content');
+
+        // Start collapsed; remove inline height if JS disabled
+        contentEl.style.maxHeight = "0px";
+
+        // Click
+        titleEl.addEventListener('click', () => togglePost(post, titleEl, contentEl));
+
+        // Keyboard (Enter/Space)
+        titleEl.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            togglePost(post, titleEl, contentEl);
+          }
+        });
+      });
+    });
+  </script>
 </body>
 </html>
+
